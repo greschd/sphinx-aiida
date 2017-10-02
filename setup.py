@@ -30,5 +30,7 @@ if __name__ == '__main__':
             'aiida-core',
             'sphinx',
         ],
-        extras_require={'dev': ['yapf', 'pre-commit']},
+        extras_require={
+            'dev': ['yapf', 'pre-commit', 'prospector', 'sphinx-rtd-theme']
+        },
     )
