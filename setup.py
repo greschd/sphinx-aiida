@@ -4,13 +4,13 @@ import re
 from setuptools import setup, find_packages
 
 # Get the version number
-with open('sphinx.ext.aiida/__init__.py') as f:
+with open('sphinx_aiida/__init__.py') as f:
     MATCH_EXPR = "__version__[^'\"]+(['\"])([^'\"]+)"
     VERSION = re.search(MATCH_EXPR, f.read()).group(2).strip()
 
 if __name__ == '__main__':
     setup(
-        name='sphinx.ext.aiida',
+        name='sphinx_aiida',
         version=VERSION,
         description='Sphinx extension for documenting AiiDA and its plugins.',
         author='Dominik Gresch',
