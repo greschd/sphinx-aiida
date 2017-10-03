@@ -28,6 +28,7 @@ if __name__ == '__main__':
         include_package_data=True,
         install_requires=[
             'aiida-core',
+            'plum',
             'sphinx',
         ],
         extras_require={

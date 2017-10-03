@@ -7,4 +7,4 @@ This is a demo documentation to show off the features of the ``sphinx-aiida`` ex
    :maxdepth: 2
    :caption: Contents:
 
-.. aiida-workchain:: aiida.work.workchain.WorkChain
+.. aiida-workchain:: demo_workchain.DemoWorkChain
