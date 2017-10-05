@@ -99,9 +99,12 @@ class AiidaWorkchainDirective(Directive):
             if isinstance(port, InputPort):
                 item += self.build_port_paragraph(name, port)
             elif isinstance(port, PortNamespace):
-                item += addnodes.literal_strong(
-                    text='Namespace {}'.format(name)
-                )
+                # item += addnodes.literal_strong(
+                #     text='Namespace {}'.format(name)
+                # )
+                item += addnodes.literal_strong(text=name)
+                item += nodes.Text(', ')
+                item += nodes.emphasis(text='Namespace')
                 item += self.build_portnamespace_doctree(port)
             else:
                 raise NotImplementedError
@@ -119,10 +122,10 @@ class AiidaWorkchainDirective(Directive):
             text=self.format_valid_types(port.valid_type)
         )
         paragraph += nodes.Text(', ')
-        paragraph += nodes.Text('required' if port.required else 'optional')
-        if port.help:
-            paragraph += nodes.paragraph(text=port.help)
-
+        paragraph += nodes.Text(
+            'required -- ' if port.required else 'optional -- '
+        )
+        paragraph += nodes.Text(port.help)
         return paragraph
 
     @staticmethod

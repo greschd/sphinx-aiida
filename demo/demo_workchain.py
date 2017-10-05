@@ -24,7 +24,12 @@ class SubWorkChain(WorkChain):
     def define(cls, spec):
         super(SubWorkChain, cls).define(spec)
 
-        spec.input('y', valid_type=Int)
+        spec.input(
+            'y',
+            valid_type=Int,
+            help="The second, nested input.",
+            required=False
+        )
         spec.expose_inputs(NestedSubWorkChain, namespace='sub')
 
 
@@ -37,4 +42,8 @@ class NestedSubWorkChain(WorkChain):
     def define(cls, spec):
         super(NestedSubWorkChain, cls).define(spec)
 
-        spec.input('z', valid_type=Bool)
+        spec.input(
+            'z',
+            valid_type=Bool,
+            help="A third input variable, that is nested two levels deep."
+        )
