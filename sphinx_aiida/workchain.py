@@ -10,7 +10,7 @@ aiida.try_load_dbenv()
 from aiida.orm.data import Data
 from aiida.work.process import PortNamespace
 from plum.util import load_class
-from plum.port import InputPort
+from plum.port import InputPort, OutputPort
 
 
 def setup_aiida_workchain(app):
@@ -62,24 +62,22 @@ class AiidaWorkchainDirective(Directive):
         content = addnodes.desc_content()
         content += nodes.paragraph(text=self.workchain.__doc__)
 
-        # field_list = nodes.field_list()
-        # content += field_list
-
-        content += self.build_inputs_field()
-        # field_list += self.build_outputs_field()
+        content += self.build_doctree(
+            title='Inputs:', port_namespace=self.workchain_spec.inputs
+        )
+        content += self.build_doctree(
+            title='Outputs:', port_namespace=self.workchain_spec.outputs
+        )
 
         return content
 
-    def build_inputs_field(self):
+    def build_doctree(self, title, port_namespace):
         """
-        Returns the field describing the workchain inputs.
+        Returns a doctree for a given port namespace, including a title.
         """
         paragraph = nodes.paragraph()
-        # paragraph += addnodes.literal_strong(text='Inputs')
-        paragraph += addnodes.literal_strong(text='Inputs:')
-        paragraph += self.build_portnamespace_doctree(
-            self.workchain_spec.inputs
-        )
+        paragraph += nodes.strong(text=title)
+        paragraph += self.build_portnamespace_doctree(port_namespace)
 
         return paragraph
 
@@ -96,7 +94,7 @@ class AiidaWorkchainDirective(Directive):
             if name == 'dynamic':
                 continue
             item = nodes.list_item()
-            if isinstance(port, InputPort):
+            if isinstance(port, (InputPort, OutputPort)):
                 item += self.build_port_paragraph(name, port)
             elif isinstance(port, PortNamespace):
                 # item += addnodes.literal_strong(
@@ -122,10 +120,10 @@ class AiidaWorkchainDirective(Directive):
             text=self.format_valid_types(port.valid_type)
         )
         paragraph += nodes.Text(', ')
-        paragraph += nodes.Text(
-            'required -- ' if port.required else 'optional -- '
-        )
-        paragraph += nodes.Text(port.help)
+        paragraph += nodes.Text('required' if port.required else 'optional')
+        if port.help:
+            paragraph += nodes.Text(' -- ')
+            paragraph += nodes.Text(port.help)
         return paragraph
 
     @staticmethod

@@ -12,7 +12,9 @@ class DemoWorkChain(WorkChain):
         super(DemoWorkChain, cls).define(spec)
 
         spec.input('x', valid_type=Float, help='First input argument.')
+        spec.output('x', valid_type=Float)
         spec.expose_inputs(SubWorkChain, namespace='sub')
+        spec.expose_outputs(SubWorkChain)
 
 
 class SubWorkChain(WorkChain):
@@ -30,7 +32,9 @@ class SubWorkChain(WorkChain):
             help="The second, nested input.",
             required=False
         )
+        spec.output('y', valid_type=Int)
         spec.expose_inputs(NestedSubWorkChain, namespace='sub')
+        spec.expose_outputs(NestedSubWorkChain)
 
 
 class NestedSubWorkChain(WorkChain):
@@ -47,3 +51,4 @@ class NestedSubWorkChain(WorkChain):
             valid_type=Bool,
             help="A third input variable, that is nested two levels deep."
         )
+        spec.output('z', valid_type=Bool)
