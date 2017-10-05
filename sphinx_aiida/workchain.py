@@ -7,6 +7,7 @@ from docutils.parsers.rst import Directive, directives
 from sphinx import addnodes
 import aiida
 aiida.try_load_dbenv()
+from aiida.orm.data import Data
 from aiida.work.process import PortNamespace
 from plum.util import load_class
 from plum.port import InputPort
@@ -75,7 +76,7 @@ class AiidaWorkchainDirective(Directive):
         """
         paragraph = nodes.paragraph()
         # paragraph += addnodes.literal_strong(text='Inputs')
-        paragraph += addnodes.literal_strong(text='Inputs')
+        paragraph += addnodes.literal_strong(text='Inputs:')
         paragraph += self.build_portnamespace_doctree(
             self.workchain_spec.inputs
         )
@@ -83,26 +84,49 @@ class AiidaWorkchainDirective(Directive):
         return paragraph
 
     def build_portnamespace_doctree(self, portnamespace):
+        """
+        Builds the doctree for a port namespace.
+        """
         result = nodes.bullet_list(bullet='*')
-        for name, port in portnamespace.items():
+        for name, port in sorted(portnamespace.items()):
             if name.startswith(
                 '_'
             ) and self.HIDDEN_INPUTS_FLAG not in self.options:
                 continue
+            if name == 'dynamic':
+                continue
             item = nodes.list_item()
             if isinstance(port, InputPort):
                 item += self.build_port_paragraph(name, port)
-            else:
+            elif isinstance(port, PortNamespace):
                 item += addnodes.literal_strong(
                     text='Namespace {}'.format(name)
                 )
                 item += self.build_portnamespace_doctree(port)
+            else:
+                raise NotImplementedError
             result += item
         return result
 
-    @staticmethod
-    def build_port_paragraph(name, port):
+    def build_port_paragraph(self, name, port):
+        """
+        Build the paragraph that describes a single port.
+        """
         paragraph = nodes.paragraph()
         paragraph += addnodes.literal_strong(text=name)
+        paragraph += nodes.Text(', ')
+        paragraph += nodes.emphasis(
+            text=self.format_valid_types(port.valid_type)
+        )
+        paragraph += nodes.Text(', ')
+        paragraph += nodes.Text('required' if port.required else 'optional')
+        if port.help:
+            paragraph += nodes.paragraph(text=port.help)
 
         return paragraph
+
+    @staticmethod
+    def format_valid_types(valid_type):
+        if issubclass(valid_type, Data):
+            return valid_type.__name__
+        return str(tuple(t.__name__ for t in valid_type))

@@ -11,7 +11,7 @@ class DemoWorkChain(WorkChain):
     def define(cls, spec):
         super(DemoWorkChain, cls).define(spec)
 
-        spec.input('x', valid_type=Float)
+        spec.input('x', valid_type=Float, help='First input argument.')
         spec.expose_inputs(SubWorkChain, namespace='sub')
 
 
