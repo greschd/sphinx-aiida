@@ -19,8 +19,8 @@ class AiidaWorkchainDirective(Directive):
     Directive to auto-document AiiDA workchains.
     """
     required_arguments = 1
-    HIDDEN_INPUTS_FLAG = 'hidden-inputs'
-    option_spec = {HIDDEN_INPUTS_FLAG: directives.flag}
+    HIDDEN_PORTS_FLAG = 'hidden-ports'
+    option_spec = {HIDDEN_PORTS_FLAG: directives.flag}
     has_content = False
 
     def run(self):
@@ -89,7 +89,7 @@ class AiidaWorkchainDirective(Directive):
         for name, port in sorted(portnamespace.items()):
             if name.startswith(
                 '_'
-            ) and self.HIDDEN_INPUTS_FLAG not in self.options:
+            ) and self.HIDDEN_PORTS_FLAG not in self.options:
                 continue
             if name == 'dynamic':
                 continue
@@ -128,7 +128,7 @@ class AiidaWorkchainDirective(Directive):
 
     @staticmethod
     def format_valid_types(valid_type):
-        from aiida.orm.data import Data
-        if issubclass(valid_type, Data):
+        try:
             return valid_type.__name__
-        return str(tuple(t.__name__ for t in valid_type))
+        except TypeError:
+            return str(valid_type)
