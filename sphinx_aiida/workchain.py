@@ -6,9 +6,6 @@ from docutils import nodes
 from docutils.parsers.rst import Directive, directives
 from sphinx import addnodes
 import aiida
-aiida.try_load_dbenv()
-from aiida.orm.data import Data
-from aiida.work.process import PortNamespace
 from plum.util import load_class
 from plum.port import InputPort, OutputPort
 
@@ -27,6 +24,7 @@ class AiidaWorkchainDirective(Directive):
     has_content = False
 
     def run(self):
+        aiida.try_load_dbenv()
         self.load_workchain()
         return self.build_node_tree()
 
@@ -85,6 +83,8 @@ class AiidaWorkchainDirective(Directive):
         """
         Builds the doctree for a port namespace.
         """
+        from aiida.work.process import PortNamespace
+
         result = nodes.bullet_list(bullet='*')
         for name, port in sorted(portnamespace.items()):
             if name.startswith(
@@ -128,6 +128,7 @@ class AiidaWorkchainDirective(Directive):
 
     @staticmethod
     def format_valid_types(valid_type):
+        from aiida.orm.data import Data
         if issubclass(valid_type, Data):
             return valid_type.__name__
         return str(tuple(t.__name__ for t in valid_type))
