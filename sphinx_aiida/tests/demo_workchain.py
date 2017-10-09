@@ -1,8 +1,10 @@
+"""This module defines an example workchain for the aiida-workchain documentation directive."""
+
 from aiida.work.workchain import WorkChain
 from aiida.orm.data.base import Int, Float, Bool
 
 
-class DemoWorkChain(WorkChain):
+class DemoWorkChain(WorkChain):  # pylint: disable=abstract-method
     """
     A demo workchain to show how the workchain auto-documentation works.
     """
@@ -17,7 +19,7 @@ class DemoWorkChain(WorkChain):
         spec.expose_outputs(SubWorkChain)
 
 
-class SubWorkChain(WorkChain):
+class SubWorkChain(WorkChain):  # pylint: disable=abstract-method
     """
     A sub-workchain, to show how port namespaces are handled.
     """
@@ -37,7 +39,7 @@ class SubWorkChain(WorkChain):
         spec.expose_outputs(NestedSubWorkChain)
 
 
-class NestedSubWorkChain(WorkChain):
+class NestedSubWorkChain(WorkChain):  # pylint: disable=abstract-method
     """
     A nested workchain, to show how second-level port namespaces are handled.
     """

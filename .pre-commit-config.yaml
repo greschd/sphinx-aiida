@@ -9,4 +9,4 @@
   hooks:
   - id: prospector
     language: system
-    exclude: '^(demo/)'
+    exclude: '^(sphinx_aiida/tests/workchain_source/)'

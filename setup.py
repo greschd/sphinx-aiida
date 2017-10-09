@@ -28,10 +28,11 @@ if __name__ == '__main__':
         include_package_data=True,
         install_requires=[
             'aiida-core',
-            'plum',
+            'plumpy',
             'sphinx',
         ],
         extras_require={
-            'dev': ['yapf', 'pre-commit', 'prospector', 'sphinx-rtd-theme']
+            'dev':
+            ['yapf', 'pre-commit', 'prospector', 'sphinx-rtd-theme', 'pytest']
         },
     )
